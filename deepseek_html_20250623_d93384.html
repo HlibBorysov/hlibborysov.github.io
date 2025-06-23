@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Романтична вікторина для коханої</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0, #fbc2eb, #a6c1ee);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #5a3d5c;
+            padding: 10px;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 428px;
+            height: 100%;
+            max-height: 926px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.92);
+            display: flex;
+            flex-direction: column;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 15px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            color: #e75480;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #9e579d;
+            font-weight: 500;
+        }
+        
+        .cards-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.4s ease;
+            z-index: 1;
+            background: linear-gradient(to bottom right, #ffffff, #f9f4ff);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(149, 69, 153, 0.1);
+        }
+        
+        .card.active {
+            opacity: 1;
+            transform: translateX(0);
+            z-index: 2;
+        }
+        
+        .card.prev {
+            transform: translateX(-100%);
+        }
+        
+        .card-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e75480;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(231, 84, 128, 0.3);
+        }
+        
+        .question {
+            font-size: 1.5rem;
+            line-height: 1.4;
+            margin: 25px 0;
+            color: #5a3d5c;
+            font-weight: 600;
+            padding: 0 15px;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        
+        .decoration {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .heart {
+            color: #e75480;
+            font-size: 1.8rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn {
+            background: #9e579d;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 14px 22px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(158, 87, 157, 0.3);
+            transition: all 0.3s ease;
+            -webkit-appearance: none;
+            touch-action: manipulation;
+        }
+        
+        .btn:hover {
+            background: #e75480;
+            transform: translateY(-2px);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.7;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin: 10px 0 5px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #e75480, #9e579d);
+            width: 7%;
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+        
+        .counter {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #9e579d;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .swipe-hint {
+            position: absolute;
+            bottom: 90px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #9e579d;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            animation: fadeHint 3s infinite;
+            padding: 0 15px;
+        }
+        
+        @keyframes fadeHint {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        /* iPhone 12 Pro Max specific */
+        @media only screen and (max-width: 428px) and (max-height: 926px) {
+            .container {
+                border-radius: 0;
+                max-width: 100%;
+                max-height: 100%;
+            }
+            .question {
+                font-size: 1.4rem;
+            }
+        }
+        
+        /* Smaller devices */
+        @media only screen and (max-width: 380px) {
+            .question {
+                font-size: 1.3rem;
+            }
+            .btn {
+                padding: 12px 18px;
+                font-size: 0.95rem;
+            }
+            .heart {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Романтична вікторина</h1>
+            <div class="subtitle">Тільки для моєї коханої</div>
+        </header>
+        
+        <div class="cards-container">
+            <!-- Cards will be generated by JavaScript -->
+        </div>
+        
+        <div class="counter">1/15</div>
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        
+        <div class="swipe-hint">
+            <i class="fas fa-arrow-left"></i> Проведіть пальцем для навігації <i class="fas fa-arrow-right"></i>
+        </div>
+        
+        <div class="nav-controls">
+            <button class="btn" id="prevBtn" disabled>
+                <i class="fas fa-arrow-left"></i> Назад
+            </button>
+            <button class="btn" id="nextBtn">
+                Далі <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const questions = [
+                "Яка тварина асоціюється з нашою першою зустріччю?",
+                "Що нам залишав тато підготовленого, коли ми приїжджали на дачу удвох?",
+                "Пам'ятаєш, як ти зробила мені піцу вперше?",
+                "У якому місці, щоб побувати, ми проїхали 4050 кілометрів?",
+                "Що ми найбільше любимо робити вранці?",
+                "Який саморобний подарунок я тобі подарував?",
+                "Яка була найугарніша робоча фотосесія?",
+                "Що мені подарували на позаминулій роботі?",
+                "Що ми раніше могли пити літрами і без наслідків?",
+                "Яку незвичайну пташку ми бачили в Італії?",
+                "Пам'ятаєш, як я на неї задивився?",
+                "Скільки разів ми разом були за кордоном?",
+                "Скільки запитань було задано?",
+                "Чим дикий лосось відрізняється від тунця?",
+                "Які дві риби нам дуже сподобалися в Єгипті?"
+            ];
+            
+            const cardsContainer = document.querySelector('.cards-container');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const counter = document.querySelector('.counter');
+            const progressBar = document.querySelector('.progress-bar');
+            
+            let currentCard = 0;
+            
+            // Create cards
+            questions.forEach((question, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                if (index === 0) card.classList.add('active');
+                
+                card.innerHTML = `
+                    <div class="card-number">${index + 1}</div>
+                    <div class="decoration">
+                        <i class="fas fa-heart heart"></i>
+                        <i class="fas fa-heart heart"></i>
+                        <i class="fas fa-heart heart"></i>
+                    </div>
+                    <div class="question">${question}</div>
+                    <div class="decoration">
+                        <i class="fas fa-heart heart"></i>
+                        <i class="fas fa-heart heart"></i>
+                        <i class="fas fa-heart heart"></i>
+                    </div>
+                `;
+                
+                cardsContainer.appendChild(card);
+            });
+            
+            const cards = document.querySelectorAll('.card');
+            const totalCards = cards.length;
+            
+            // Update UI
+            function updateUI() {
+                // Update cards
+                cards.forEach((card, index) => {
+                    card.classList.remove('active', 'prev');
+                    if (index === currentCard) {
+                        card.classList.add('active');
+                    } else if (index === currentCard - 1) {
+                        card.classList.add('prev');
+                    }
+                });
+                
+                // Update buttons
+                prevBtn.disabled = currentCard === 0;
+                nextBtn.disabled = currentCard === totalCards - 1;
+                
+                // Update counter
+                counter.textContent = `${currentCard + 1}/${totalCards}`;
+                
+                // Update progress bar
+                const progress = ((currentCard + 1) / totalCards) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+            
+            // Navigation functions
+            function goToNextCard() {
+                if (currentCard < totalCards - 1) {
+                    currentCard++;
+                    updateUI();
+                }
+            }
+            
+            function goToPrevCard() {
+                if (currentCard > 0) {
+                    currentCard--;
+                    updateUI();
+                }
+            }
+            
+            // Button event listeners
+            nextBtn.addEventListener('click', goToNextCard);
+            prevBtn.addEventListener('click', goToPrevCard);
+            
+            // Touch events for buttons
+            nextBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                goToNextCard();
+            });
+            
+            prevBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                goToPrevCard();
+            });
+            
+            // Swipe navigation for mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+            let touchStartY = 0;
+            let touchEndY = 0;
+            
+            cardsContainer.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].clientX;
+                touchStartY = e.changedTouches[0].clientY;
+            }, { passive: true });
+            
+            cardsContainer.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+            
+            cardsContainer.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].clientX;
+                touchEndY = e.changedTouches[0].clientY;
+                handleSwipe();
+            }, { passive: true });
+            
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const verticalSwipeThreshold = 100;
+                
+                // Check if it's mostly horizontal swipe
+                if (Math.abs(touchEndX - touchStartX) > Math.abs(touchEndY - touchStartY)) {
+                    if (touchEndX < touchStartX - swipeThreshold) {
+                        // Swipe left
+                        goToNextCard();
+                    }
+                    
+                    if (touchEndX > touchStartX + swipeThreshold) {
+                        // Swipe right
+                        goToPrevCard();
+                    }
+                }
+            }
+            
+            // Initialize UI
+            updateUI();
+            
+            // Prevent pull-to-refresh
+            document.body.addEventListener('touchmove', function(e) {
+                if (e.scale !== 1) { 
+                    e.preventDefault(); 
+                }
+            }, { passive: false });
+        });
+    </script>
+</body>
+</html>
